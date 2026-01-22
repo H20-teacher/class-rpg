@@ -2,83 +2,332 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>RPG 학급 경영 허브</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지브리 숲 마을 - 우리들의 교실</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;500&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #00ffcc; --bg: #0a0a0a; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 20px; }
-        .header { border: 2px solid var(--main); text-align: center; padding: 20px; margin-bottom: 30px; box-shadow: 0 0 15px var(--main); }
-        .section-title { font-size: 1.2rem; color: #ff00ff; margin: 30px 0 15px; border-left: 5px solid #ff00ff; padding-left: 10px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
-        .card { background: rgba(255,255,255,0.05); border: 1px solid #444; padding: 20px; border-radius: 8px; }
-        .btn { display: block; width: 100%; padding: 10px; margin-top: 10px; background: transparent; border: 1px solid var(--main); color: var(--main); text-align: center; text-decoration: none; cursor: pointer; }
-        .btn:hover { background: var(--main); color: #000; }
+        /* 기본 색상 및 폰트 설정 */
+        :root {
+            --bg-color: #fcf8f3; /* 아주 연한 크림색 배경 */
+            --main-green: #6aaa6a; /* 숲 초록색 */
+            --main-brown: #a07869; /* 나무 갈색 */
+            --light-blue: #a8d5e5; /* 하늘색 */
+            --text-dark: #3a3a3a; /* 진한 글자색 */
+            --card-bg: rgba(255, 255, 255, 0.9); /* 살짝 투명한 흰색 카드 배경 */
+            --shadow-light: rgba(0, 0, 0, 0.08); /* 부드러운 그림자 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            font-family: 'Jua', cursive; /* 메인 폰트: 주아체 */
+            margin: 0; padding: 0;
+            overflow-x: hidden;
+            background-image: url('https://i.imgur.com/kS5W3vj.png'); /* 지브리 숲 배경 이미지 */
+            background-size: cover;
+            background-attachment: fixed; /* 배경 고정 */
+            background-position: center bottom;
+        }
+
+        /* 컨테이너 */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.7); /* 전체 컨테이너 배경에 약간 투명도 */
+            border-radius: 25px;
+            box-shadow: 0 10px 40px var(--shadow-light);
+            position: relative;
+            z-index: 1; /* 캐릭터 이미지 위에 오도록 */
+        }
+
+        /* 헤더 */
+        .village-header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .village-header h1 {
+            font-size: 3.5rem;
+            color: var(--main-green);
+            margin: 0;
+            text-shadow: 2px 2px 5px var(--shadow-light);
+            letter-spacing: 2px;
+        }
+
+        .date-mood {
+            font-family: 'Noto Sans KR', sans-serif; /* 날짜는 일반 폰트 */
+            font-size: 1.1rem;
+            color: var(--main-brown);
+            margin-top: 10px;
+        }
+
+        /* 섹션 박스 (카드) */
+        .section-box {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden; /* 배경 캐릭터가 카드 밖으로 나가지 않게 */
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--main-brown);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .section-title img {
+            height: 35px; /* 제목 옆 아이콘 크기 */
+            vertical-align: middle;
+        }
+
+        /* 공지사항 목록 */
+        .notice-list {
+            list-style: none; padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+        .notice-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .notice-list li:last-child { border-bottom: none; }
+
+        /* 함께 가꾸는 정원 (프로그레스 바) */
+        .garden-progress {
+            background: #e0e0e0;
+            height: 18px;
+            border-radius: 10px;
+            margin-top: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .garden-bar {
+            background: linear-gradient(to right, #a7e0a7, var(--main-green));
+            height: 100%;
+            width: 70%; /* [수정 가능] 게이지 진행도 */
+            border-radius: 10px;
+            transition: width 0.8s ease-out;
+            position: relative;
+        }
+        .garden-bar::after { /* 게이지 안쪽 아이콘 */
+            content: '🌱';
+            position: absolute;
+            right: 5px;
+            top: -5px;
+            font-size: 1.5rem;
+            opacity: 0.8;
+        }
+        .garden-text {
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 0.95rem;
+            text-align: right;
+            margin-top: 8px;
+            color: var(--main-green);
+            font-weight: bold;
+        }
+
+        /* 이웃집 구경하기 (학생 카드) */
+        .house-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); /* 유동적인 3열 */
+            gap: 15px;
+        }
+
+        .house-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        .house-card:hover {
+            border-color: var(--light-blue);
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .house-card .icon {
+            font-size: 2.8rem; /* 아이콘 크기 */
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+        .house-card .name {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        /* 지브리 캐릭터 이미지 배치 */
+        .character-overlay {
+            position: fixed;
+            pointer-events: none; /* 클릭 방지 */
+            z-index: 0; /* 배경으로 */
+            opacity: 0.6; /* 투명도 */
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+        }
+        .totoro {
+            width: 150px;
+            bottom: 20px;
+            left: 5%;
+        }
+        .ponyo {
+            width: 100px;
+            top: 15%;
+            right: 8%;
+            transform: rotate(15deg);
+        }
+        .susuwatari { /* 스스와타리 (검은 먼지) */
+            width: 40px;
+            top: 50%;
+            left: 2%;
+            opacity: 0.4;
+        }
+        .kodama { /* 코다마 (원령공주 나무정령) */
+            width: 70px;
+            bottom: 10%;
+            right: 15%;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { margin: 15px auto; padding: 15px; }
+            .village-header h1 { font-size: 2.5rem; }
+            .section-title { font-size: 1.8rem; gap: 8px; }
+            .section-title img { height: 30px; }
+            .house-grid { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+            .house-card .icon { font-size: 2rem; }
+            .house-card .name { font-size: 1rem; }
+            /* 모바일에서 캐릭터 위치 조정 */
+            .totoro { width: 100px; bottom: 10px; left: 2%; }
+            .ponyo { width: 70px; top: 10%; right: 5%; }
+            .susuwatari { display: none; } /* 모바일에서 먼지 없애기 */
+            .kodama { display: none; } /* 모바일에서 코다마 없애기 */
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div id="currentDate" style="color: var(--main); font-weight: bold;"></div>
-        <h1>CLASS MULTIVERSE HUB</h1>
+
+    <img src="https://i.imgur.com/6Uq4R13.png" class="character-overlay totoro" alt="토토로"> <img src="https://i.imgur.com/0FhXjW5.png" class="character-overlay ponyo" alt="포뇨"> <img src="https://i.imgur.com/5S90hP2.png" class="character-overlay susuwatari" alt="스스와타리"> <img src="https://i.imgur.com/Jv9i2uS.png" class="character-overlay kodama" alt="코다마"> <div class="container">
+    <header class="village-header">
+        <h1>🌳 숲속 우리들의 교실 🏡</h1>
+        <p id="todayDate" class="date-mood"></p>
+        <div style="margin-top: 15px; color: var(--main-green); font-weight: bold;">✨ 오늘의 숲 기운: "따스하고 포근한 하루" ✨</div>
+    </header>
+
+    <div class="section-box">
+        <div class="section-title">
+            <img src="https://i.imgur.com/GgS0qW8.png" alt="알림 아이콘"> 숲속 우체통 (마을 소식)
+        </div>
+        <ul class="notice-list">
+            <li>📮 내일은 즐거운 숲 체험 활동! (준비물: 간식, 물통, 편한 신발)</li>
+            <li>📮 작은 도서관에서 새로 온 책들 확인해 보세요!</li>
+            <li>📮 친구에게 고운 말 한마디 건네기 챌린지 시작!</li>
+        </ul>
     </div>
 
-    <div class="section-title">오늘의 아침 퀘스트</div>
-    <div class="card" id="questBox">
-        <h3 id="qTitle">퀘스트를 로딩 중...</h3>
-        <p id="qDetail"></p>
+    <div class="section-box">
+        <div class="section-title">
+            <img src="https://i.imgur.com/5h8qJ60.png" alt="성장 아이콘"> 함께 가꾸는 정원 (학급 목표)
+        </div>
+        <p style="font-family: 'Noto Sans KR', sans-serif; font-size: 1rem; margin: 0 0 8px 0;">우리 반 나무가 쑥쑥 자라요!</p>
+        <div class="garden-progress">
+            <div class="garden-bar"></div>
+        </div>
+        <p class="garden-text">🌳 커다란 나무가 될 때까지 30% 남았어요!</p>
     </div>
-   <div class="grid">
-    <div class="card">
-        <div class="section-title" style="margin-top:0;">🍖 오늘의 만찬 (급식)</div>
-        <p>🍱 현미밥, 소고기무국, 제육볶음, 배추김치, 사과</p>
-        <p style="font-size: 0.8rem; color: #888;">* 알레르기 유발 식품을 확인하세요!</p>
-    </div>
-    <div class="card">
-        <div class="section-title" style="margin-top:0;">🏆 명예의 전당 (Top 3)</div>
-        <ol style="padding-left: 20px;">
-            <li>🥇 김철수 (Lv.12)</li>
-            <li>🥈 이영희 (Lv.10)</li>
-            <li>🥉 박민수 (Lv.9)</li>
-        </ol>
-    </div>
-    <div class="section-title">플레이어 개인 영지 (학생 웹사이트)</div>
-    <div class="grid" id="studentGrid"></div>
 
+    <div class="section-box">
+        <div class="section-title">
+            <img src="https://i.imgur.com/tHqM91W.png" alt="집 아이콘"> 이웃집 구경하기 (우리 친구들)
+        </div>
+        <div class="house-grid" id="studentGrid">
+            </div>
+    </div>
 </div>
-    <script>
-        // 날짜 설정
-        const now = new Date();
-        document.getElementById('currentDate').innerText = `${now.getFullYear()}. ${now.getMonth()+1}. ${now.getDate()}.`;
 
-        // 퀘스트 데이터 (날짜별로 수정하세요)
-        const quests = { "0121": { t: "📖 아침 독서", d: "좋아하는 책 10페이지 읽기" } };
-        const key = String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0');
-        const q = quests[key] || { t: "자유 퀘스트", d: "자신만의 목표를 세워보세요." };
-        document.getElementById('qTitle').innerText = q.t;
-        document.getElementById('qDetail').innerText = q.d;
+<script>
+    // 날짜 업데이트 (지브리 감성에 맞게 요일 추가)
+    const d = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+    document.getElementById('todayDate').innerText = d.toLocaleDateString('ko-KR', options);
 
-        // 학생 코드 연동 (Apps Script URL을 여기에 넣으세요)
-        const apiURL = "여기에_아까_복사한_웹앱_URL_입력";
+    // 학생 데이터 (여학생 4, 남학생 2 컨셉 - 지브리 감성 아이콘)
+    const students = [
+        { name: "미호", icon: "🌸", color: "#f8e0e6" }, // 벚꽃
+        { name: "민서", icon: "🍀", color: "#e0f2f7" }, // 네잎클로버
+        { name: "지음", icon: "🐿️", color: "#f7f2e0" }, // 다람쥐
+        { name: "태호", icon: "🦋", color: "#e0eaf7" }, // 나비
+        { name: "가람", icon: "🌲", color: "#e6f8e0" }, // 나무
+        { name: "지유", icon: "⭐️", color: "#f1e0f},// 별
+<script>
+    // 1. 날짜 업데이트
+    const d = new Date();
+    const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+    document.getElementById('todayDate').innerText = d.toLocaleDateString('ko-KR', options);
 
-        async function loadStudents() {
-            try {
-                const res = await fetch(apiURL);
-                const students = await res.json();
-                const grid = document.getElementById('studentGrid');
-                students.forEach(s => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    card.innerHTML = `<h3>${s.name}</h3><p>LV.${s.level}</p><button class="btn" onclick="view('${encodeURIComponent(s.htmlCode)}')">구경하기</button>`;
-                    grid.appendChild(card);
-                });
-            } catch(e) { console.log("데이터 로딩 실패"); }
+    // 2. 구글 시트 연동 설정 (선생님의 API 주소를 넣어주세요)
+    const apiURL = "https://docs.google.com/spreadsheets/d/1oLdFC2QKLFFhab3JyYopFXksQi3eVKgiGGIOnOe15UU/edit?usp=sharing";
+
+    async function loadStudents() {
+        const grid = document.getElementById('studentGrid');
+        
+        try {
+            const response = await fetch(apiURL);
+            const data = await response.json();
+
+            // 기존 내용을 비우고 시트 데이터로 채웁니다.
+            grid.innerHTML = ""; 
+
+            data.forEach(student => {
+                const card = document.createElement('div');
+                card.className = 'house-card';
+                
+                // 시트 데이터에 따라 아이콘이나 정보를 다르게 보여줄 수 있습니다.
+                // 예: 성별이나 레벨에 따른 아이콘 변경 가능
+                card.innerHTML = `
+                    <div class="icon">🏡</div>
+                    <div class="name">${student.name}</div>
+                    <div style="font-size:0.8rem; color:var(--main-green);">Lv.${student.level || 1}</div>
+                `;
+
+                // 클릭 시 학생의 개별 코드(뤼튼 등)가 실행되도록 연결
+                card.onclick = () => {
+                    if (student.htmlCode) {
+                        const newWindow = window.open();
+                        newWindow.document.write(student.htmlCode);
+                        newWindow.document.close();
+                    } else {
+                        alert("아직 꾸며진 방이 없어요!");
+                    }
+                };
+                grid.appendChild(card);
+            });
+        } catch (error) {
+            console.error("데이터 로딩 실패:", error);
+            grid.innerHTML = "<p>친구들을 불러오는 데 실패했어요. 주소를 확인해주세요!</p>";
         }
-        function view(code) {
-            const win = window.open();
-            win.document.write(decodeURIComponent(code));
-            win.document.close();
-        }
-        loadStudents();
-    </script>
-</body>
+    }
 
-</html>
-
+    // 페이지 로드 시 실행
+    loadStudents();
+</script>
