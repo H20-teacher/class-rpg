@@ -2,174 +2,104 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지브리 숲 마을 - 우리 교실</title>
-    <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;500&display=swap" rel="stylesheet">
+    <title>지브리 숲 교실</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #f0f4f0;
-            --main-green: #4e7d4e;
-            --warm-brown: #8d6e63;
-            --text-dark: #2c3e50;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            font-family: 'Jua', cursive;
-            margin: 0; padding: 0;
-            background: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), 
-                        url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1950&q=80');
-            background-size: cover; background-attachment: fixed;
-        }
-
-        .container { max-width: 850px; margin: 20px auto; padding: 20px; }
-        header { text-align: center; margin-bottom: 20px; }
-        header h1 { font-size: 3rem; color: var(--main-green); text-shadow: 2px 2px 0px white; margin: 0; }
-
-        /* 탭 버튼 */
-        .tab-menu { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.7); border: 2px solid var(--main-green);
-            padding: 12px 25px; border-radius: 50px; font-family: 'Jua'; font-size: 1.2rem;
-            color: var(--main-green); cursor: pointer; transition: 0.3s;
-        }
-        .tab-btn.active { background: var(--main-green); color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
-        /* 섹션 제어 */
-        .tab-content { display: none; animation: fadeIn 0.5s; }
+        body { font-family: 'Jua', cursive; background: url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=2000') no-repeat center center fixed; background-size: cover; margin: 0; padding: 20px; }
+        .tab-menu { text-align: center; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; font-size: 1.2rem; cursor: pointer; border-radius: 30px; border: 2px solid #4e7d4e; background: white; color: #4e7d4e; margin: 5px; }
+        .tab-btn.active { background: #4e7d4e; color: white; }
+        .tab-content { display: none; max-width: 800px; margin: 0 auto; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* [첫 번째 탭: 2x2 그리드] */
-        .hub-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2열 배치 */
-            grid-template-rows: repeat(2, 200px); /* 균등한 높이 */
-            gap: 20px;
-        }
-
-        .hub-item {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border: 2px solid #fff;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            color: var(--text-dark);
-        }
-        .hub-item:hover { transform: translateY(-5px); background: white; border-color: var(--main-green); }
-        .hub-item .icon { font-size: 4rem; margin-bottom: 10px; }
-        .hub-item span { font-size: 1.5rem; }
-
-        /* [두 번째 탭: 친구들 집] */
-        .house-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .house-card { 
-            background: white; border-radius: 25px; padding: 20px; text-align: center; 
-            cursor: pointer; transition: 0.3s; box-shadow: 0 5px 10px rgba(0,0,0,0.05);
-        }
-        .house-card:hover { transform: translateY(-5px); border: 2px solid var(--main-green); }
-
-        @media (max-width: 600px) {
-            .hub-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
-            .house-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .hub-item { background: rgba(255,255,255,0.9); padding: 40px; border-radius: 20px; text-align: center; cursor: pointer; border: 2px solid white; }
+        .house-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .house-card { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <header>
-        <h1>🌳 지브리 숲 교실 🌳</h1>
-        <p id="todayDate" style="font-family:'Noto Sans KR'; color: var(--warm-brown);"></p>
-    </header>
-
-    <nav class="tab-menu">
-        <button class="tab-btn active" onclick="openTab(evt, 'plaza')">🏡 마을 광장</button>
-        <button id="friendTabBtn" class="tab-btn" onclick="openTab(evt, 'village')">🏘️ 친구들 집</button>
-    </nav>
+    <div class="tab-menu">
+        <button class="tab-btn active" onclick="openTab('plaza')">🏡 마을 광장</button>
+        <button class="tab-btn" onclick="openTab('village')">🏘️ 친구 마이룸 구경가기</button>
+    </div>
 
     <div id="plaza" class="tab-content active">
         <div class="hub-grid">
-            <div class="hub-item" onclick="accessMyRoom()">
-                <div class="icon">🏠</div>
-                <span>마이룸 가기</span>
-            </div>
-            <div class="hub-item" onclick="alert('아침활동 페이지로 이동합니다.')">
-                <div class="icon">☀️</div>
-                <span>아침활동</span>
-            </div>
-            <div class="hub-item" onclick="alert('감정상담소로 이동합니다.')">
-                <div class="icon">☁️</div>
-                <span>감정상담소</span>
-            </div>
-            <div class="hub-item" onclick="alert('공부상담소로 이동합니다.')">
-                <div class="icon">📖</div>
-                <span>공부상담소</span>
-            </div>
+            <div class="hub-item" onclick="accessMyRoom()">🏠 마이룸 가기</div>
+            <div class="hub-item" onclick="alert('아침활동으로 이동!')">☀️ 아침활동</div>
+            <div class="hub-item" onclick="alert('감정상담소!')">☁️ 감정상담소</div>
+            <div class="hub-item" onclick="alert('공부상담소!')">📖 공부상담소</div>
         </div>
     </div>
 
     <div id="village" class="tab-content">
-        <div class="house-grid" id="studentGrid">
-            </div>
+        <div class="house-grid" id="studentGrid"></div>
     </div>
-</div>
 
 <script>
-    let studentData = []; // 데이터를 전역으로 저장
+    let studentData = [];
+    const scriptURL = "여기에_1단계에서_복사한_웹_앱_URL_입력";
 
-    function openTab(evt, tabId) {
-        let contents = document.getElementsByClassName("tab-content");
-        for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
-        let buttons = document.getElementsByClassName("tab-btn");
-        for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-        document.getElementById(tabId).classList.add("active");
-        if(evt) evt.currentTarget.classList.add("active");
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
     }
 
-    // 마이룸 가기 (본인 확인)
-    function accessMyRoom() {
-        const name = prompt("이름을 입력하세요.");
-        if (!name) return;
-        const student = studentData.find(s => s.name === name);
-        if (student) {
-            const pass = prompt("암호를 입력하세요.");
-            if (String(pass) === String(student.passcode)) {
-                const win = window.open("", "_blank");
-                win.document.write(student.htmlCode || "<h1>방이 비어있어요!</h1>");
-                win.document.close();
-            } else { alert("암호가 틀렸어요!"); }
-        } else { alert("등록되지 않은 이름입니다."); }
-    }
-
-    // 데이터 로드
-    const apiURL = "선생님의_구글_스크립트_URL";
     async function loadData() {
+        const res = await fetch(scriptURL);
+        studentData = await res.json();
         const grid = document.getElementById('studentGrid');
-        try {
-            const res = await fetch(apiURL);
-            studentData = await res.json();
-            grid.innerHTML = "";
-            studentData.forEach(s => {
-                const card = document.createElement('div');
-                card.className = 'house-card';
-                card.innerHTML = `<div style="font-size:2rem;">🏡</div><div>${s.name}의 집</div>`;
-                card.onclick = () => {
-                    const win = window.open("", "_blank");
-                    win.document.write(s.htmlCode);
-                    win.document.close();
-                };
-                grid.appendChild(card);
-            });
-        } catch(e) { grid.innerHTML = "데이터 로딩 실패"; }
+        grid.innerHTML = "";
+        studentData.forEach(s => {
+            const card = document.createElement('div');
+            card.className = 'house-card';
+            card.innerHTML = `<h3>${s.name}의 방</h3>`;
+            card.onclick = () => openPersonalRoom(s);
+            grid.appendChild(card);
+        });
     }
 
-    document.getElementById('todayDate').innerText = new Date().toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric', weekday:'long'});
+    function accessMyRoom() {
+        const name = prompt("이름이 뭐야?");
+        const s = studentData.find(st => st.name === name);
+        if (s && prompt("비밀번호는?") === String(s.passcode)) openPersonalRoom(s);
+        else alert("정보가 맞지 않아!");
+    }
+
+    function openPersonalRoom(student) {
+        const win = window.open("", "_blank");
+        // 파일 업로드 기능을 모든 학생 방 상단에 강제로 붙여넣기
+        const uploadHTML = `
+            <div style="background:#f0f0f0; padding:20px; border-radius:15px; text-align:center; font-family:'Jua';">
+                <h3>📤 ${student.name}의 과제 제출함</h3>
+                <input type="file" id="fileInput">
+                <button onclick="upload()">파일 보내기</button>
+                <p id="status"></p>
+            </div>
+            <script>
+                async function upload() {
+                    const file = document.getElementById('fileInput').files[0];
+                    if(!file) return alert('파일을 골라줘!');
+                    document.getElementById('status').innerText = '보내는 중...';
+                    const reader = new FileReader();
+                    reader.onload = async () => {
+                        const base64 = reader.result.split(',')[1];
+                        const res = await fetch('${scriptURL}', {
+                            method: 'POST',
+                            body: JSON.stringify({base64: base64, type: file.type, name: '${student.name}_' + file.name})
+                        });
+                        const result = await res.json();
+                        document.getElementById('status').innerText = result.result === 'success' ? '완료!' : '실패ㅠ';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            <\/script>
+        `;
+        win.document.write(uploadHTML + student.htmlCode);
+        win.document.close();
+    }
     loadData();
 </script>
 </body>
