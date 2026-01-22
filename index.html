@@ -13,23 +13,23 @@
         .tab-content.active { display: block; }
         .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .hub-item { background: rgba(255,255,255,0.9); padding: 40px; border-radius: 20px; text-align: center; cursor: pointer; border: 2px solid white; transition: 0.3s; }
-        .hub-item:hover { transform: scale(1.05); background: white; }
+        .hub-item:hover { transform: scale(1.02); background: white; }
         .house-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .house-card { background: white; padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
     <div class="tab-menu">
-        <button id="btn-plaza" class="tab-btn active" onclick="openTab('plaza')">🏡 마을 광장</button>
-        <button id="btn-village" class="tab-btn" onclick="openTab('village')">🏘️ 친구 마이룸 구경가기</button>
+        <button class="tab-btn active" onclick="openTab('plaza')">🏡 마을 광장</button>
+        <button class="tab-btn" onclick="openTab('village')">🏘️ 친구 마이룸 구경가기</button>
     </div>
 
     <div id="plaza" class="tab-content active">
         <div class="hub-grid">
             <div class="hub-item" onclick="accessMyRoom()">🏠 마이룸 가기</div>
             <div class="hub-item" onclick="completeMorningActivity()">☀️ 아침활동 레벨업</div>
-            <div class="hub-item" onclick="alert('감정상담소로 이동합니다!')">☁️ 감정상담소</div>
-            <div class="hub-item" onclick="alert('공부상담소로 이동합니다!')">📖 공부상담소</div>
+            <div class="hub-item" onclick="alert('준비 중입니다!')">☁️ 감정상담소</div>
+            <div class="hub-item" onclick="alert('준비 중입니다!')">📖 공부상담소</div>
         </div>
     </div>
 
@@ -39,91 +39,96 @@
 
 <script>
     let studentData = [];
-    // [선생님 확인!] 아래 URL은 1단계에서 배포한 구글 웹 앱 URL이어야 합니다.
+    // ⚠️ 여기에 선생님의 배포 주소를 정확히 넣어주세요.
     const scriptURL = "https://script.google.com/macros/s/AKfycbytNu5KjGJAXubBd2fKyxmwq9qi3Dz81DIL5Hej7-USSapr6ReWVMDoDlcH1kutOMzA/exec";
 
     function openTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        // 버튼 활성화 처리
-        if(tabId === 'plaza') document.getElementById('btn-plaza').classList.add('active');
-        else document.getElementById('btn-village').classList.add('active');
+        event.currentTarget.classList.add('active');
     }
 
     async function loadData() {
         try {
             const res = await fetch(scriptURL);
+            if (!res.ok) throw new Error('Network response was not ok');
             studentData = await res.json();
             const grid = document.getElementById('studentGrid');
             grid.innerHTML = "";
             studentData.forEach(s => {
                 const card = document.createElement('div');
                 card.className = 'house-card';
-                card.innerHTML = `<h3>${s.name}의 방</h3><p>Lv.${s.level}</p>`;
+                card.innerHTML = `<h3>${s.name}의 집</h3><p>Lv.${s.level}</p>`;
                 card.onclick = () => openPersonalRoom(s);
                 grid.appendChild(card);
             });
-        } catch(e) { console.error("데이터 로드 실패:", e); }
+        } catch(e) { 
+            console.error(e);
+            alert("시트 데이터를 불러오지 못했습니다. 앱스 스크립트 배포 설정을 확인해주세요!"); 
+        }
     }
 
     function accessMyRoom() {
-        const name = prompt("🌳 정령이 묻습니다: '너의 이름은 무엇이냐?'");
-        if(!name) return;
-        const s = studentData.find(st => st.name === name.trim());
+        if (studentData.length === 0) return alert("데이터를 불러오는 중입니다. 잠시만 기다려주세요!");
+        const name = prompt("이름을 입력하세요.");
+        const s = studentData.find(st => st.name === name);
         if (s) {
-            const pass = prompt("암호를 입력해주렴!");
-            if(String(pass) === String(s.passcode)) {
-                openPersonalRoom(s);
-            } else { alert("암호가 틀렸단다!"); }
-        } else { alert("명단에 없는 이름이구나!"); }
+            const pass = prompt("비밀번호를 입력하세요.");
+            if(String(pass) === String(s.passcode)) openPersonalRoom(s);
+            else alert("비밀번호가 틀렸습니다.");
+        } else alert("이름을 찾을 수 없습니다.");
     }
 
-    // [추가된 레벨업 함수]
     async function completeMorningActivity() {
-        const name = prompt("레벨업할 학생의 이름을 입력하세요.");
+        const name = prompt("레벨업할 이름을 입력하세요.");
         if (!name) return;
-        
         try {
             const res = await fetch(scriptURL, {
                 method: 'POST',
-                body: JSON.stringify({ action: "addLevel", name: name.trim() })
+                body: JSON.stringify({ action: "addLevel", name: name })
             });
             const result = await res.json();
             if (result.result === "success") {
-                alert(`✨ 레벨업 성공! 현재 레벨: ${result.newLevel}`);
-                loadData(); 
-            } else {
-                alert(result.message || "이미 오늘 참여했구나!");
-            }
-        } catch (e) { alert("연결에 실패했습니다."); }
+                alert(`✨ 레벨업! 현재 레벨: ${result.newLevel}`);
+                loadData();
+            } else alert(result.message);
+        } catch (e) { alert("연결 실패!"); }
     }
 
     function openPersonalRoom(student) {
         const win = window.open("", "_blank");
         const uploadHTML = `
-            <div style="background:#f0f0f0; padding:20px; border-radius:15px; text-align:center; font-family:'Jua'; margin-bottom:20px;">
-                <h2 style="color:#4e7d4e;">🍃 Lv.${student.level} ${student.name}의 방</h2>
+            <div style="background:#f0f0f0; padding:20px; border-radius:15px; text-align:center; font-family:'Jua';">
+                <h2>🍃 ${student.name}의 방 (Lv.${student.level})</h2>
                 <hr>
-                <h3>📤 과제 제출함</h3>
                 <input type="file" id="fileInput">
-                <button onclick="upload()" style="padding:5px 15px; cursor:pointer;">파일 보내기</button>
-                <p id="status" style="font-size:0.9rem; color:#666;"></p>
+                <button onclick="upload()">파일 보내기</button>
+                <p id="status"></p>
             </div>
             <script>
                 async function upload() {
                     const file = document.getElementById('fileInput').files[0];
-                    if(!file) return alert('파일을 골라줘!');
-                    document.getElementById('status').innerText = '보내는 중... 🌱';
+                    if(!file) return alert('파일 선택!');
                     const reader = new FileReader();
                     reader.onload = async () => {
                         const base64 = reader.result.split(',')[1];
-                        try {
-                            const res = await fetch('${scriptURL}', {
-                                method: 'POST',
-                                body: JSON.stringify({
-                                    base64: base64, 
-                                    type: file.type, 
-                                    name: '${student.name}_' + file.name
-                                })
-                            });
+                        const res = await fetch('${scriptURL}', {
+                            method: 'POST',
+                            body: JSON.stringify({base64: base64, type: file.type, name: '${student.name}_' + file.name})
+                        });
+                        const result = await res.json();
+                        alert(result.result === 'success' ? '제출 완료!' : '실패');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            <\/script>
+        `;
+        win.document.write(uploadHTML + student.htmlCode.replace(/{{name}}/g, student.name));
+        win.document.close();
+    }
+
+    loadData();
+</script>
+</body>
+</html>
