@@ -3,195 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지브리 숲 마을 - 우리들의 교실</title>
+    <title>지브리 숲 마을 - 우리 교실</title>
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@300;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #fcf8f3;
-            --main-green: #6aaa6a;
-            --main-brown: #a07869;
-            --light-blue: #a8d5e5;
-            --text-dark: #3a3a3a;
-            --card-bg: rgba(255, 255, 255, 0.85);
+            --bg-color: #f0f4f0;
+            --main-green: #4e7d4e;
+            --warm-brown: #8d6e63;
+            --text-dark: #2c3e50;
         }
 
         body {
             background-color: var(--bg-color);
-            color: var(--text-dark);
             font-family: 'Jua', cursive;
             margin: 0; padding: 0;
-            /* 지브리 느낌의 숲 배경 (무료 이미지 소스) */
-            background-image: linear-gradient(to bottom, rgba(252,248,243,0.3), rgba(252,248,243,0.3)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
+            background: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), 
+                        url('https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=1950&q=80');
+            background-size: cover; background-attachment: fixed;
         }
 
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 25px;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
+        .container { max-width: 850px; margin: 20px auto; padding: 20px; }
+        header { text-align: center; margin-bottom: 20px; }
+        header h1 { font-size: 3rem; color: var(--main-green); text-shadow: 2px 2px 0px white; margin: 0; }
 
-        .village-header { text-align: center; padding: 20px 0; }
-        .village-header h1 {
-            font-size: 3.2rem;
-            color: var(--main-green);
-            margin: 0;
-            text-shadow: 2px 2px 0px #fff;
+        /* 탭 버튼 */
+        .tab-menu { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.7); border: 2px solid var(--main-green);
+            padding: 12px 25px; border-radius: 50px; font-family: 'Jua'; font-size: 1.2rem;
+            color: var(--main-green); cursor: pointer; transition: 0.3s;
         }
+        .tab-btn.active { background: var(--main-green); color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        .date-mood {
-            font-family: 'Noto Sans KR', sans-serif;
-            font-size: 1rem;
-            color: var(--main-brown);
-            margin-top: 10px;
-            background: white;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-        }
+        /* 섹션 제어 */
+        .tab-content { display: none; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-box {
-            background: var(--card-bg);
-            border-radius: 25px;
-            padding: 25px;
-            margin-top: 25px;
-            border: 2px solid #fff;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            color: var(--main-brown);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* 학생 카드 그리드 (6명에 최적화된 3열) */
-        .house-grid {
+        /* [첫 번째 탭: 2x2 그리드] */
+        .hub-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr); /* 2열 배치 */
+            grid-template-rows: repeat(2, 200px); /* 균등한 높이 */
             gap: 20px;
         }
 
-        .house-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            transition: 0.3s;
+        .hub-item {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #fff;
             cursor: pointer;
-            border: 2px solid transparent;
+            transition: 0.3s;
+            text-decoration: none;
+            color: var(--text-dark);
         }
+        .hub-item:hover { transform: translateY(-5px); background: white; border-color: var(--main-green); }
+        .hub-item .icon { font-size: 4rem; margin-bottom: 10px; }
+        .hub-item span { font-size: 1.5rem; }
 
-        .house-card:hover {
-            transform: translateY(-7px);
-            border-color: var(--main-green);
-            box-shadow: 0 10px 20px rgba(106, 170, 106, 0.2);
+        /* [두 번째 탭: 친구들 집] */
+        .house-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .house-card { 
+            background: white; border-radius: 25px; padding: 20px; text-align: center; 
+            cursor: pointer; transition: 0.3s; box-shadow: 0 5px 10px rgba(0,0,0,0.05);
         }
-
-        .house-card .icon { font-size: 2.5rem; margin-bottom: 5px; }
-        .house-card .name { font-size: 1.3rem; color: var(--text-dark); }
-        .house-card .level { font-family: 'Noto Sans KR'; font-size: 0.8rem; color: var(--main-green); }
-
-        /* 프로그레스 바 */
-        .garden-progress {
-            background: #eee; height: 12px; border-radius: 10px; overflow: hidden; margin-top: 10px;
-        }
-        .garden-bar {
-            background: var(--main-green); width: 70%; height: 100%; border-radius: 10px;
-        }
+        .house-card:hover { transform: translateY(-5px); border: 2px solid var(--main-green); }
 
         @media (max-width: 600px) {
+            .hub-grid { grid-template-columns: 1fr; grid-template-rows: auto; }
             .house-grid { grid-template-columns: repeat(2, 1fr); }
-            .village-header h1 { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header class="village-header">
-        <h1>🌳 숲속 우리들의 교실</h1>
-        <div id="todayDate" class="date-mood"></div>
+    <header>
+        <h1>🌳 지브리 숲 교실 🌳</h1>
+        <p id="todayDate" style="font-family:'Noto Sans KR'; color: var(--warm-brown);"></p>
     </header>
 
-    <div class="section-box">
-        <div class="section-title">📮 숲속 우체통</div>
-        <div style="font-family: 'Noto Sans KR'; line-height: 1.8;">
-            • 오늘 5교시 체육관으로 모이세요!<br>
-            • 독서 기록장 제출은 내일까지입니다.
+    <nav class="tab-menu">
+        <button class="tab-btn active" onclick="openTab(evt, 'plaza')">🏡 마을 광장</button>
+        <button id="friendTabBtn" class="tab-btn" onclick="openTab(evt, 'village')">🏘️ 친구들 집</button>
+    </nav>
+
+    <div id="plaza" class="tab-content active">
+        <div class="hub-grid">
+            <div class="hub-item" onclick="accessMyRoom()">
+                <div class="icon">🏠</div>
+                <span>마이룸 가기</span>
+            </div>
+            <div class="hub-item" onclick="alert('아침활동 페이지로 이동합니다.')">
+                <div class="icon">☀️</div>
+                <span>아침활동</span>
+            </div>
+            <div class="hub-item" onclick="alert('감정상담소로 이동합니다.')">
+                <div class="icon">☁️</div>
+                <span>감정상담소</span>
+            </div>
+            <div class="hub-item" onclick="alert('공부상담소로 이동합니다.')">
+                <div class="icon">📖</div>
+                <span>공부상담소</span>
+            </div>
         </div>
     </div>
 
-    <div class="section-box">
-        <div class="section-title">🌱 자라나는 마음 정원</div>
-        <div class="garden-progress"><div class="garden-bar"></div></div>
-        <p style="font-family: 'Noto Sans KR'; font-size: 0.8rem; text-align: right; margin-top:5px;">꽃이 피기까지 30% 남았어요!</p>
-    </div>
-
-    <div class="section-box">
-        <div class="section-title">🏠 우리들의 작은 집</div>
+    <div id="village" class="tab-content">
         <div class="house-grid" id="studentGrid">
-            <p style="grid-column: span 3; text-align: center; font-family: 'Noto Sans KR';">숲속 친구들을 불러오는 중...</p>
-        </div>
+            </div>
     </div>
 </div>
 
 <script>
-    // 1. 날짜 설정
-    const d = new Date();
-    document.getElementById('todayDate').innerText = d.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+    let studentData = []; // 데이터를 전역으로 저장
 
-    // 2. ★ 중요: 선생님의 구글 앱스 스크립트 URL을 여기에 넣으세요 ★
-    const apiURL = "https://script.google.com/macros/s/AKfycbyGUZBa1KSiCYzhgvjor7_7L8rLuHjWDowZKz_aMajnGsc-9nw7vNL5Cj6evwfar7ka/exec";
+    function openTab(evt, tabId) {
+        let contents = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
+        let buttons = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
+        document.getElementById(tabId).classList.add("active");
+        if(evt) evt.currentTarget.classList.add("active");
+    }
 
-    async function loadStudents() {
+    // 마이룸 가기 (본인 확인)
+    function accessMyRoom() {
+        const name = prompt("이름을 입력하세요.");
+        if (!name) return;
+        const student = studentData.find(s => s.name === name);
+        if (student) {
+            const pass = prompt("암호를 입력하세요.");
+            if (String(pass) === String(student.passcode)) {
+                const win = window.open("", "_blank");
+                win.document.write(student.htmlCode || "<h1>방이 비어있어요!</h1>");
+                win.document.close();
+            } else { alert("암호가 틀렸어요!"); }
+        } else { alert("등록되지 않은 이름입니다."); }
+    }
+
+    // 데이터 로드
+    const apiURL = "선생님의_구글_스크립트_URL";
+    async function loadData() {
         const grid = document.getElementById('studentGrid');
         try {
             const res = await fetch(apiURL);
-            const data = await res.json();
-            grid.innerHTML = ""; // 로딩 메시지 삭제
-
-            data.forEach((s, index) => {
+            studentData = await res.json();
+            grid.innerHTML = "";
+            studentData.forEach(s => {
                 const card = document.createElement('div');
                 card.className = 'house-card';
-                
-                // 남여 비율에 맞춰 아이콘 자동 배정 (또는 시트 데이터 활용 가능)
-                const icons = ['🌸', '🍀', '🦋', '🐿️', '🌲', '⛵']; 
-                const icon = icons[index % icons.length];
-
-                card.innerHTML = `
-                    <div class="icon">${icon}</div>
-                    <div class="name">${s.name}</div>
-                    <div class="level">성장 레벨 ${s.level || 1}</div>
-                `;
-
+                card.innerHTML = `<div style="font-size:2rem;">🏡</div><div>${s.name}의 집</div>`;
                 card.onclick = () => {
-                    if (s.htmlCode) {
-                        const win = window.open();
-                        win.document.write(s.htmlCode);
-                        win.document.close();
-                    } else {
-                        alert(s.name + "의 공간은 아직 공사 중이에요!");
-                    }
+                    const win = window.open("", "_blank");
+                    win.document.write(s.htmlCode);
+                    win.document.close();
                 };
                 grid.appendChild(card);
             });
-        } catch (e) {
-            grid.innerHTML = "<p style='grid-column:span 3;'>친구들을 불러오지 못했어요. URL을 확인해주세요!</p>";
-        }
+        } catch(e) { grid.innerHTML = "데이터 로딩 실패"; }
     }
 
-    loadStudents();
+    document.getElementById('todayDate').innerText = new Date().toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric', weekday:'long'});
+    loadData();
 </script>
-
 </body>
 </html>
