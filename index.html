@@ -130,8 +130,32 @@
 
     loadData();
 </script>
+<div style="text-align: center; margin-top: 50px; padding-bottom: 20px;">
+    <button onclick="document.getElementById('privacyModal').style.display='block'" 
+            style="background: none; border: none; color: #666; text-decoration: underline; cursor: pointer; font-size: 0.8rem;">
+        개인정보 처리방침
+    </button>
+</div>
+
+<div id="privacyModal" style="display:none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+    <div style="background: white; margin: 10% auto; padding: 20px; width: 80%; max-width: 500px; border-radius: 15px; font-family: sans-serif; line-height: 1.6;">
+        <h3 style="margin-top: 0;">🔒 개인정보 처리방침</h3>
+        <div style="font-size: 0.9rem; color: #333; max-height: 300px; overflow-y: auto; text-align: left;">
+            <p><strong>1. 수집 항목:</strong> 성명(또는 별명), 비밀번호(식별용), 과제 파일</p>
+            <p><strong>2. 수집 목적:</strong> 학급 운영 시스템(마이룸) 접속 및 학습 결과물(과제) 관리</p>
+            <p><strong>3. 보유 및 이용기간:</strong> 해당 학년도 종료 시까지 (종료 후 구글 시트 및 드라이브 데이터 일괄 삭제)</p>
+            <p><strong>4. 데이터 관리:</strong> 수집된 데이터는 외부 업체에 제공되지 않으며, 교사의 구글 보안 계정 내에서만 관리됨</p>
+            <p><strong>5. 동의 거부 권리:</strong> 본 시스템 이용을 원치 않을 경우 별도의 오프라인 과제 제출이 가능함</p>
+        </div>
+        <button onclick="document.getElementById('privacyModal').style.display='none'" 
+                style="margin-top: 20px; padding: 10px 20px; background: #4e7d4e; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            닫기
+        </button>
+    </div>
+</div>
 </body>
 </html>
+
 
 
 
